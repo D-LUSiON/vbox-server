@@ -52,13 +52,13 @@ function createTrayIcon() {
 
 function createWindow() {
     let winState = windowStateKeeper({
-        defaultWidth: 800,
-        defaultHeight: 600
+        defaultWidth: 1200,
+        defaultHeight: 700
     });
 
     mainWindow = new BrowserWindow({
-        width: winState.width,
-        height: winState.height,
+        width: 1200,
+        height: 700,
         x: winState.x,
         y: winState.y,
         resizable: false,

@@ -8,8 +8,14 @@
                 <form [formGroup]="settings_data" novalidate (ngSubmit)="onSubmit()">
                     <div class="row">
                         <div class="col-xs-6">
-                            <label>Server port</label>
-                            <input type="number" class="form-control" formControlName="port">
+                            <div class="form-group">
+                                <label>Server port</label>
+                                <input type="number" class="form-control" formControlName="port">
+                            </div>
+                            <div class="form-group">
+                                <label>The Movie DB API key</label>
+                                <input type="text" class="form-control" formControlName="api_key">
+                            </div>
                         </div>
                         <div class="col-xs-6">
                             <label>Movies root folder</label>

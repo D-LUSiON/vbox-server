@@ -11,7 +11,7 @@ export class SettingsService {
 
     server_settings: Settings;
 
-    settings_loaded: boolean;
+    settings_loaded: boolean = false;
 
     emmiter: Subject<any> = new Subject();
 
@@ -20,6 +20,9 @@ export class SettingsService {
         private notificationsService: NotificationsService,
         private ngZone: NgZone,
     ) {
+        if (!this.settings_loaded)
+            this.getSettings();
+
         this.electron.ipcRenderer.on('Settings:update:response', (event, response) => {
             this.ngZone.run(() => {
                 this.server_settings = new Settings(response);
@@ -54,6 +57,18 @@ export class SettingsService {
                 observer.complete();
             });
         });
+    }
+
+    loadSettings() {
+        if (!this.settings_loaded)
+            return new Observable(observer => {
+                this.getSettings((data) => {
+                    observer.next(true);
+                    observer.complete();
+                });
+            });
+        else
+            return this.settings;
     }
 
     get settings() {

@@ -27,7 +27,8 @@ export class SettingsComponent implements OnInit {
         this.settings_data = new FormGroup({
             '_id': new FormControl(this.settings._id),
             'port': new FormControl(this.settings.port),
-            'movies_folders': new FormControl(this.settings.movies_folders)
+            'movies_folders': new FormControl(this.settings.movies_folders),
+            'api_key': new FormControl(this.settings.api_key)
         });
     }
 
