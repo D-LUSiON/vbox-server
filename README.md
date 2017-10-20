@@ -1,28 +1,26 @@
-# ElTest1
+# vBox server info
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.2.
+This is a small server software that will help you stream your own videos from a computer to another remote or to your phone/tablet.
+The development is still in progress and many features don't work so don't expect it to work as intended.
 
-## Development server
+## Development
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+This software is [Electron](https://electron.atom.io/) / [Angular 4](https://angular.io/) based.
+
+Run `npm run dev` to start development. The program will start a dev copy and it will refresh on code change.
 
 ## Code scaffolding
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|module`.
+This software is generated with [Angular CLI](https://cli.angular.io/) so you can use it's power!
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+Run `npm run package:windows` to build the project. The build artifacts will be stored in the `app/` directory.
 
 ## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io). No tests are written yet fo feel free to create your own.
 
 ## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/). There are no e2e tests yet.
