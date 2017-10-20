@@ -1,0 +1,28 @@
+<div class="filters-container row">
+    <div class="col-xs-2">
+        <a [routerLink]="['/movies', 'new']" class="btn btn-default btn-sm">
+            <span class="fa fa-plus"></span> NEW MOVIE
+        </a>
+    </div>
+    <div class="col-xs-4">
+        <div class="form-group form-group-sm">
+            <input type="text" class="form-control" placeholder="Filter..." (keyup)="filterMovies(filter.value)" #filter>
+        </div>
+    </div>
+    <div class="col-xs-4 col-xs-push-2">
+        <div class="form-group form-group-sm">
+            <select class="form-control">
+                <option value="">By date (desc)</option>
+                <option value="">By date (asc)</option>
+                <option value="">By title (desc)</option>
+                <option value="">By title (asc)</option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="movies-list">
+    <a [routerLink]="['/movies', 'edit', movie._id]" class="movie-box" *ngFor="let movie of filtered_movies" >
+        <div class="movie-poster" [style.background-image]="'url(' + movie.poster + ')'"></div>
+        <h6>{{ movie.title }}</h6>
+    </a>
+</div>

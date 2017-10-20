@@ -1,0 +1,4 @@
+.container { margin-bottom: 15px; }
+ul li { display: block; }
+ul li strong.request { color: blue; }
+ul li strong.response { color: green; }

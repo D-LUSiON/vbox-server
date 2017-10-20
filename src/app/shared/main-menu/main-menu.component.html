@@ -1,0 +1,77 @@
+<div class="navbar navbar-default">
+    <div class="navbar-header">
+        <span class="navbar-brand">vBox Server</span>
+    </div>
+    <div class="navbar-collapse collapse navbar-responsive-collapse">
+        <ul class="nav navbar-nav">
+            <li class="dropdown" dropdown [dropdownToggle]="false">
+                <span class="dropdown-toggle" dropdown-open>
+                    MENU <b class="caret"></b>
+                </span>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a [routerLink]="['/categories']">
+                            <span class="fa fa-list-alt"></span> Categories
+                        </a>
+                    </li>
+                    <li>
+                        <a [routerLink]="['/movies']">
+                            <span class="fa fa-film"></span> Movies
+                        </a>
+                    </li>
+                    <li>
+                            <a [routerLink]="['/tv-shows']">
+                            <span class="fa fa-television"></span> TV Shows
+                        </a>
+                    </li>
+                    <li>
+                            <a [routerLink]="['/collections']">
+                            <span class="fa fa-database"></span> Collections
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#" (click)="onCloseApp($event)">Exit</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a [routerLink]="['/settings']" class="app-exit" title="vBox server settings">
+                    <span class="fa fa-cog"></span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="app-exit" (click)="onMinimizeApp($event)" title="Minimize vBox server">
+                    <span class="fa fa-window-minimize"></span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="app-exit" (click)="onCloseApp($event)" title="Exit vBox server">
+                    <span class="fa fa-times"></span>
+                </a>
+            </li>
+            <!-- <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="#">Action</a>
+                    </li>
+                    <li>
+                        <a href="#">Another action</a>
+                    </li>
+                    <li>
+                        <a href="#">Something else here</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#">Separated link</a>
+                    </li>
+                </ul>
+            </li> -->
+        </ul>
+    </div>
+</div>

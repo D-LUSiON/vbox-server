@@ -1,0 +1,32 @@
+<div class="movie-edit row">
+    <form [formGroup]="movie_data" novalidate (ngSubmit)="onSubmit()">
+        <div class="col-xs-5">
+            <div class="movie-poster" [style.background-image]="'url(' + movie_data.value['poster'] + ')'">
+                <input type="hidden" formControlName="poster">
+            </div>
+        </div>
+        <div class="col-xs-7">
+            <div class="row">
+                <div class="col-xs-3">
+                    <button type="button" class="btn btn-default btn-block" (click)="onClickBack()">
+                        <span class="fa fa-angle-double-left"></span> Back
+                    </button>
+                </div>
+                <div class="col-xs-4 col-xs-push-2">
+                    <button type="button" class="btn btn-info btn-block">themoviedb.org info</button>
+                </div>
+                <div class="col-xs-3 col-xs-push-2">
+                    <button type="submit" class="btn btn-success btn-block">Save</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group form-group-sm">
+                        <label>Title</label>
+                        <input type="text" class="form-control" formControlName="title">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
