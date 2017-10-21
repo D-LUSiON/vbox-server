@@ -3,6 +3,19 @@ body {
     color: #fff;
     background-color: #333;
 }
+
+*:not(.form-control) {
+    user-select: none;
+}
+
+.push-right {
+    float: right !important;
+}
+
+.push-left {
+    float: left !important;
+}
+
 #Background {
     position: fixed;
     top: 0;

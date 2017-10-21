@@ -14,6 +14,8 @@ const path = require('path');
 const url = require('url');
 const fs = require('fs');
 
+const Datastore = require('nedb');
+
 const windowStateKeeper = require('electron-window-state');
 
 let mainWindow;
@@ -135,12 +137,12 @@ app.on('activate', function () {
 const Settings = require('./controllers/settings.class');
 
 ipcMain.on('Settings:get', (event, arg) => {
-    const settings = new Settings().get((data) => {
+    const settings = new Settings(Datastore).get((data) => {
         event.sender.send('Settings:get:response', data[0]);
     });
 });
 ipcMain.on('Settings:update', (event, arg) => {
-    const settings = new Settings().set(arg, (data) => {
+    const settings = new Settings(Datastore).set(arg, (data) => {
         event.sender.send('Settings:update:response', data);
     });
 });
@@ -148,14 +150,19 @@ ipcMain.on('Settings:update', (event, arg) => {
 // Files interface events
 
 // Movies interface events
-ipcMain.on('Settings:get', (event, arg) => {
-    const settings = new Settings().get((data) => {
-        event.sender.send('Settings:get:response', data[0]);
+const Movies = require('./controllers/movies.class');
+
+ipcMain.on('Movies:get', (event, arg) => {
+    const Movies_DS = new Movies(Datastore);
+    Movies_DS.getAll((movies) => {
+        event.sender.send('Movies:get:response', movies);
     });
 });
-ipcMain.on('Settings:update', (event, arg) => {
-    const settings = new Settings().set(arg, (data) => {
-        event.sender.send('Settings:update:response', data);
+
+ipcMain.on('Movie:save', (event, movie) => {
+    const Movies_DS = new Movies(Datastore);
+    Movies_DS.save(movie, (new_movie) => {
+        event.sender.send('Movie:save:response', new_movie);
     });
 });
 

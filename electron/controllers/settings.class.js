@@ -1,9 +1,8 @@
-const Datastore = require('nedb');
 const path = require('path');
 
 const env = require('../environment.js');
 
-const Settings = function () {
+const Settings = function (Datastore) {
     const _self = this;
 
     this.db = null;
@@ -29,9 +28,16 @@ const Settings = function () {
     this.set = function (data, callback) {
         let new_data = JSON.parse(JSON.stringify(data));
         delete new_data._id;
-        this.db.update({ _id: data._id }, new_data, {}, (err, rows_updated) => {
-            callback.apply(this, [data]);
-        });
+
+        if (!data._id) {
+            this.db.update({ _id: data._id }, new_data, {}, (err, rows_updated) => {
+                callback.apply(this, [data]);
+            });
+        } else {
+            this.db.insert(new_data, (err, rows_inserted) => {
+                callback.apply(this, [rows_inserted]);
+            });
+        }
     }
 
     this.__insertDefaultSettings = function (callback) {

@@ -1,48 +1,77 @@
 <div class="movie-edit row">
     <form [formGroup]="movie_data" novalidate (ngSubmit)="onSubmit()">
         <div class="col-xs-3">
-            <div class="movie-poster" [style.background-image]="'url(' + movie_data.value['poster'] + ')'">
+            <div class="movie-poster mb-15" [style.background-image]="'url(' + movie_data.value['poster'] + ')'">
                 <input type="hidden" formControlName="poster">
             </div>
             <div class="labels-container">
-                <span class="label label-primary" *ngFor="let genre of this.movie.genres">{{ genre.name }}</span>
+                <span class="label label-primary" *ngFor="let genre of movie.genres">{{ genre.name }}</span>
             </div>
         </div>
         <div class="col-xs-9">
-            <div class="row">
+            <div class="row mb-15">
                 <div class="col-xs-3">
-                    <button type="button" class="btn btn-default btn-block" (click)="onClickBack()">
+                    <a [routerLink]="['/movies']" class="btn btn-default btn-block">
                         <span class="fa fa-angle-double-left"></span> Back
-                    </button>
-                </div>
-                <div class="col-xs-5">
-                    <button type="button" class="btn btn-info btn-block" (click)="getMovieInfo()">themoviedb.org info</button>
+                    </a>
                 </div>
                 <div class="col-xs-4">
-                    <button type="submit" class="btn btn-success btn-block">Save</button>
+                    <button type="submit" class="btn btn-success btn-block" [disabled]="movie_data.value['title'] === ''">Save</button>
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-12">
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <div class="form-group form-group-sm">
-                                <label>Title</label>
-                                <input type="text" class="form-control" formControlName="title">
-                            </div>
-                        </div>
-                        <div class="col-xs-6">
-                            <div class="form-group form-group-sm">
-                                <label>Original Title</label>
-                                <input type="text" class="form-control" formControlName="original_title">
+                <div class="col-xs-6">
+                    <div class="form-group form-group-sm">
+                        <label>Title</label>
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control" formControlName="title" (keyup.enter)="getMovieInfo()">
+                            <div class="input-group-btn">
+                                <button class="btn btn-default" (click)="getMovieInfo()" [disabled]="movie_data.value['title'] === ''" title="Get info from themoviedb.org">
+                                    <span class="fa fa-info-circle"></span>
+                                </button>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div class="form-group form-group-sm">
-                                <label>Overview</label>
-                                <textarea class="form-control" formControlName="overview"></textarea>
+                    <div class="form-group form-group-sm">
+                        <label>Original Title</label>
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control" formControlName="original_title" (keyup.enter)="getMovieInfo($event)">
+                            <div class="input-group-btn">
+                                <button class="btn btn-default" (click)="getMovieInfo()" [disabled]="movie_data.value['title'] === ''" title="Get info from themoviedb.org">
+                                    <span class="fa fa-info-circle"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label>Overview</label>
+                        <textarea class="form-control" formControlName="overview"></textarea>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="form-group form-group-sm">
+                        <label>Select movie files:</label>
+                        <input type="hidden" formControlName="movie_files">
+                        <div class="mb-15">
+                            <button type="button" class="btn btn-default file-container">
+                                <span class="fa fa-folder-o"></span> Choose...
+                                <input type="file" (change)="onFilesSelected($event)" multiple/>
+                            </button>
+                        </div>
+                        <div class="list-group">
+                            <div class="list-group-item" *ngFor="let file of movie_data.value['movie_files']">
+                                <button type="button" class="btn btn-link push-right" (click)="removeFile(file)">
+                                    <span class="fa fa-times push-right"></span>
+                                </button>
+                                <h5>
+                                    <strong>{{ file.name }}</strong>
+                                </h5>
+                                <h6>
+                                    <i>{{ file.folder }}</i>
+                                </h6>
+                                <h6>
+                                    {{ file.video_type}}, {{ (file.size_gb > 1)? file.size_gb + 'Gb' : file.size_mb + 'Mb' }}
+                                </h6>
                             </div>
                         </div>
                     </div>
@@ -63,14 +92,23 @@
             </div>
             <div class="modal-body">
                 <div class="list-group movie-select">
-                    <div class="list-group-item" [class.selected]="selected_movie? movie.id === selected_movie.id : false" *ngFor="let movie of found_movie_results" (click)="onSelectMovie(movie)">
+                    <div class="list-group-item" [class.selected]="selected_movie? found_movie.id === selected_movie.id : false" *ngFor="let found_movie of found_movie_results"
+                        (click)="onSelectMovie(found_movie)" (dblclick)="onSaveCloseModal()">
                         <div class="row">
                             <div class="col-xs-3">
-                                <img [src]="movie.poster_sm" [alt]="movie.original_title" class="img-responsive"/>
+                                <img [src]="found_movie.poster" [alt]="found_movie.original_title" class="img-responsive" />
                             </div>
                             <div class="col-xs-9">
-                                <h4>{{ movie.title }}</h4>
-                                <p>{{ movie.overview }}</p>
+                                <h4>{{ found_movie.title }} <small *ngIf="found_movie.title !== found_movie.original_title">({{ found_movie.original_title }})</small></h4>
+                                <h5>
+                                    <small>
+                                        <i>(Release date: {{ found_movie.release_date }})</i>
+                                    </small>
+                                </h5>
+                                <p>{{ found_movie.overview }}</p>
+                                <div class="labels-container">
+                                    <span class="label label-primary" *ngFor="let genre of found_movie.genres">{{ genre.name }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>

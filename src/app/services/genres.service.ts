@@ -26,13 +26,11 @@ export class GenresService {
                 this.tmtb_api_key = this.settingsService.settings.api_key;
                 this.subscription.unsubscribe();
                 this.subscription = this.getGenres().subscribe((res) => {
-                    console.log(res);
                     this.all_genres = res.slice();
                 });
             });
         } else {
             let subscription = this.getGenres().subscribe((res) => {
-                console.log(res);
                 this.all_genres = res.json();
             });
         }
@@ -41,7 +39,6 @@ export class GenresService {
     getGenres() {
         return this.http.get(`https://api.themoviedb.org/3/genre/movie/list?api_key=${this.tmtb_api_key}&language=en-US`)
             .map((res) => {
-                console.log(res.json());
                 return res.json().genres;
             })
             .catch((err) => {

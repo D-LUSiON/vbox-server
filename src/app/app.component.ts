@@ -42,7 +42,8 @@ export class AppComponent implements OnInit {
         private electron: ElectronService,
         private notificationsService: NotificationsService,
         private ngZone: NgZone,
-        private toastyService:ToastyService, private toastyConfig: ToastyConfig
+        private toastyService: ToastyService,
+        private toastyConfig: ToastyConfig
     ) {
         this.setBackground();
         setTimeout(() => {
@@ -75,12 +76,13 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit() {
+        // Example asyncronous message
         // Async message handler
-        this.electron.ipcRenderer.on('asynchronous-reply', (event, response) => {
-            // use NgZone to execute code after response, otherwise the view will not be updated
-            this.ngZone.run(() => {
+        // this.electron.ipcRenderer.once('asynchronous-reply', (event, response) => {
+        //     // use NgZone to execute code after response, otherwise the view will not be updated
+        //     this.ngZone.run(() => {
 
-            });
-        });
+        //     });
+        // });
     }
 }

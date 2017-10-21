@@ -1,9 +1,8 @@
-const Datastore = require('nedb');
 const path = require('path');
 
 const env = require('../environment.js');
 
-const Movies = function () {
+const Movies = function (Datastore) {
     const _self = this;
 
     this.db = null;
@@ -14,13 +13,16 @@ const Movies = function () {
 
     this.getAll = function (callback) {
         this.db.find({}, (err, movies) => {
+            if (err)
+                console.log(err);
+
             callback.apply(this, [movies]);
         });
         return this;
     }
 
-    this.getByID = function(id, callback){
-        this.db.find({ _id: id}, (err, movie) => {
+    this.getByID = function (id, callback) {
+        this.db.find({ _id: id }, (err, movie) => {
             callback.apply(this, [movies]);
         });
     }
@@ -28,20 +30,20 @@ const Movies = function () {
     this.save = function (data, callback) {
         let new_data = JSON.parse(JSON.stringify(data));
         delete new_data._id;
-        console.log(data);
-        // this.db.update({ _id: data._id }, new_data, {}, (err, rows_updated) => {
-        //     callback.apply(this, [data]);
-        // });
-    }
 
-    this.__insertDefaultSettings = function (callback) {
-        const app_settings = require('../app_settings.js');
-        this.db.insert(app_settings, (err, settings) => {
-            callback.apply(this, [settings]);
-        });
+        if (data._id) {
+            this.db.update({ _id: data._id }, new_data, {}, (err, rows_updated) => {
+                callback.apply(this, [data]);
+            });
+        } else {
+            this.db.insert(new_data, (err, new_movie) => {
+                callback.apply(this, [new_movie]);
+            });
+        }
+
     }
 
     __construct();
 };
 
-module.exports = Settings;
+module.exports = Movies;

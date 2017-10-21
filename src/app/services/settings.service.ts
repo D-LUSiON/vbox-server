@@ -23,7 +23,7 @@ export class SettingsService {
         if (!this.settings_loaded)
             this.getSettings();
 
-        this.electron.ipcRenderer.on('Settings:update:response', (event, response) => {
+        this.electron.ipcRenderer.once('Settings:update:response', (event, response) => {
             this.ngZone.run(() => {
                 this.server_settings = new Settings(response);
                 this.notificationsService.emit({
@@ -37,7 +37,7 @@ export class SettingsService {
     }
 
     private getSettings(callback?) {
-        this.electron.ipcRenderer.on('Settings:get:response', (event, response) => {
+        this.electron.ipcRenderer.once('Settings:get:response', (event, response) => {
             this.server_settings = new Settings(response);
             this.settings_loaded = true;
             this.emmiter.next(this.settings_loaded);
