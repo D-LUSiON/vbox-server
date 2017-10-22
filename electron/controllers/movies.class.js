@@ -40,7 +40,19 @@ const Movies = function (Datastore) {
                 callback.apply(this, [new_movie]);
             });
         }
+    }
 
+    this.remove = function(data, callback) {
+        if (data._id) {
+            this.db.remove({ _id: data._id }, (err, deleted_rows) => {
+                if (deleted_rows > 0)
+                    callback.apply(this, [data]);
+                else
+                    callback.apply(this, []);
+            });
+        } else {
+            callback.apply(this, []);
+        }
     }
 
     __construct();

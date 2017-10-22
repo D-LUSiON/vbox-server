@@ -1,5 +1,5 @@
 import { GenresService } from '../../../services/genres.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, NgZone } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import {
@@ -34,14 +34,15 @@ export class MovieEditComponent implements OnInit {
     private _background_dom;
 
     constructor(
+        private router: Router,
         private route: ActivatedRoute,
-        private movieService: MoviesService,
+        private moviesService: MoviesService,
         private notificationsService: NotificationsService,
         private genresServices: GenresService,
         private ngZone: NgZone
     ) {
         if (this.route.snapshot.params['id'])
-            this.movie = this.movieService.getByID(this.route.snapshot.params['id']);
+            this.movie = this.moviesService.getByID(this.route.snapshot.params['id']);
 
         this.movie_data = new FormGroup({
             '_id': new FormControl(this.movie._id),
@@ -68,7 +69,7 @@ export class MovieEditComponent implements OnInit {
 
     getMovieInfo(event?) {
         let title = event ? event.target.value : this.movie_data.value['title'];
-        this.movieService.getMovieInfo(title).subscribe((movie_data) => {
+        this.moviesService.getMovieInfo(title).subscribe((movie_data) => {
             if (movie_data.length > 1) {
                 this.found_movie_results = movie_data.slice();
                 this.modal_shown = true;
@@ -179,7 +180,16 @@ export class MovieEditComponent implements OnInit {
     }
 
     onSubmit() {
-        this.movieService.saveMovie(this.movie);
+        this.moviesService.saveMovie(this.movie).subscribe((movie_data: Movie) => {
+            console.log('Movie saved!', movie_data);
+            if (!this.movie._id && movie_data._id)
+                this.router.navigate(['/movies', 'edit', movie_data._id]);
+        });
+    }
+
+    onRemove(){
+        if (confirm(`Are you sure you want to remove "${this.movie.title}"?`))
+        this.moviesService.removeMovie(this.movie);
     }
 
 }

@@ -58,7 +58,7 @@ export class AppComponent implements OnInit {
                 timeout: 5000,
                 theme: 'default',
             };
-            console.log(message);
+
             switch (message.severity) {
                 case 'default': this.toastyService.default(toast_message); break;
                 case 'info': this.toastyService.info(toast_message); break;

@@ -22,11 +22,13 @@ export class MoviesListComponent implements OnInit {
                 this.ngZone.run(() => {
                     this.movies = this.moviesService.all_movies;
                     this.filtered_movies = this.movies.slice();
+                    this.sortMovies();
                 });
             });
         } else {
             this.movies = this.moviesService.all_movies;
             this.filtered_movies = this.movies.slice();
+            this.sortMovies();
         }
     }
 
@@ -40,8 +42,27 @@ export class MoviesListComponent implements OnInit {
         });
     }
 
-    removeMovie(event) {
-        event.preventDefault();
+    sortMovies(field_order?) {
+        if (!field_order) field_order = 'title,asc';
+        let field = field_order.split(',')[0];
+        let order = field_order.split(',')[1];
+
+        this.movies = this.movies.sort((a, b) => {
+            if (a[field] < b[field] && order === 'asc') return -1;
+            if (a[field] < b[field] && order === 'desc') return 1;
+            if (a[field] > b[field] && order === 'asc') return 1;
+            if (a[field] > b[field] && order === 'desc') return -1;
+            if (a[field] === b[field]) return 0;
+        });
+
+        this.ngZone.run(() => {
+            this.filtered_movies = this.movies.slice();
+        });
+    }
+
+    removeMovie(movie) {
+        if (confirm(`Are you sure you want to remove "${movie.title}"?`))
+            this.moviesService.removeMovie(movie);
     }
 
 }

@@ -57,11 +57,19 @@ export class MoviesService {
     }
 
     resolve(): Observable<any> | boolean {
-        return true;
+        if (this.movies_loaded)
+            return true;
+        else
+            return new Observable(observer => {
+                this.emmiter.asObservable().subscribe(() => {
+                    observer.next();
+                    observer.complete();
+                });
+            });
     }
 
     get all_movies() {
-        return this.movies.slice();
+        return this.movies;
     }
 
     getByID(id: string) {
@@ -71,7 +79,6 @@ export class MoviesService {
             if (movie._id === id)
                 found_movie = movie;
         });
-
         return found_movie;
     }
 
@@ -106,21 +113,43 @@ export class MoviesService {
     }
 
     saveMovie(movie: Movie) {
-        this.electron.ipcRenderer.once('Movie:save:response', (event, response: Movie) => {
-            if (movie._id) {
-                let idx = this.movies.findIndex((x) => {
-                    return x._id === movie._id;
+        return new Observable(observer => {
+            this.electron.ipcRenderer.once('Movie:save:response', (event, response: Movie) => {
+                if (movie._id) {
+                    let idx = this.movies.findIndex((x) => {
+                        return x._id === movie._id;
+                    });
+                    this.movies[idx] = new Movie(response);
+                } else {
+                    this.movies.push(new Movie(response));
+                }
+                this.notificationsService.emit({
+                    title: 'Movie saved!',
+                    message: `Movie ${response.title} ${(response.title !== response.original_title) ? '<small>' + response.original_title + '</small>' : ''} was saved successfuly!`,
+                    severity: 'success'
                 });
-                this.movies[idx] = new Movie(response);
-            } else {
-                this.movies.push(new Movie(response));
-            }
-            this.notificationsService.emit({
-                title: 'Movie saved!',
-                message: `Movie ${response.title} ${(response.title !== response.original_title) ? '<small>' + response.original_title + '</small>' : ''} was saved successfuly!`,
-                severity: 'success'
+                observer.next(response);
+                observer.complete();
             });
+            this.electron.ipcRenderer.send('Movie:save', movie);
         });
-        this.electron.ipcRenderer.send('Movie:save', movie);
+    }
+
+    removeMovie(movie: Movie) {
+        this.electron.ipcRenderer.once('Movie:remove:response', (event, response: Movie) => {
+            if (response) {
+                let idx = this.movies.findIndex((x) => {
+                    return x._id === response._id;
+                });
+                this.movies.splice(idx, 1);
+                this.notificationsService.emit({
+                    title: 'Movie removed!',
+                    message: `Movie <strong>"${response.title} ${(response.title !== response.original_title) ? '<small>(' + response.original_title + ')</small>' : ''}"</strong> was saved removed!`,
+                    severity: 'success'
+                });
+                this.emmiter.next(this.movies_loaded);
+            };
+        });
+        this.electron.ipcRenderer.send('Movie:remove', movie);
     }
 }

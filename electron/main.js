@@ -63,6 +63,7 @@ function createWindow() {
         height: 700,
         x: winState.x,
         y: winState.y,
+        backgroundColor: '#333333',
         resizable: false,
         show: false,
         frame: false,
@@ -163,6 +164,13 @@ ipcMain.on('Movie:save', (event, movie) => {
     const Movies_DS = new Movies(Datastore);
     Movies_DS.save(movie, (new_movie) => {
         event.sender.send('Movie:save:response', new_movie);
+    });
+});
+
+ipcMain.on('Movie:remove', (event, movie) => {
+    const Movies_DS = new Movies(Datastore);
+    Movies_DS.remove(movie, (new_movie) => {
+        event.sender.send('Movie:remove:response', new_movie);
     });
 });
 
