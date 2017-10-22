@@ -136,6 +136,7 @@ body {
     clear: both;
 }
 .movie-box {
+    position: relative;
     float: left;
     width: 192px;
 }
@@ -145,6 +146,26 @@ body {
 .movie-box:focus {
     color: #fff;
     text-decoration: none;
+}
+.movie-box:hover,
+.movie-box:focus {
+    background-color: #333;
+}
+
+.movie-box > button.remove_movie {
+    display: none;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 1;
+}
+
+.movie-box > button.remove_movie:hover {
+    color: red;
+}
+
+.movie-box:hover > button.remove_movie {
+    display: block;
 }
 
 .movie-box .movie-poster {

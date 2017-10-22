@@ -10,6 +10,11 @@
                 </span>
                 <ul class="dropdown-menu">
                     <li>
+                        <a [routerLink]="['/dashboard']">
+                            <span class="fa fa-home"></span> Dashboard
+                        </a>
+                    </li>
+                    <li>
                         <a [routerLink]="['/categories']">
                             <span class="fa fa-list-alt"></span> Categories
                         </a>
@@ -20,18 +25,20 @@
                         </a>
                     </li>
                     <li>
-                            <a [routerLink]="['/tv-shows']">
+                        <a [routerLink]="['/tv-shows']">
                             <span class="fa fa-television"></span> TV Shows
                         </a>
                     </li>
                     <li>
-                            <a [routerLink]="['/collections']">
+                        <a [routerLink]="['/collections']">
                             <span class="fa fa-database"></span> Collections
                         </a>
                     </li>
                     <li class="divider"></li>
                     <li>
-                        <a href="#" (click)="onCloseApp($event)">Exit</a>
+                        <a href="#" (click)="onCloseApp($event)">
+                            <span class="fa fa-sign-out"></span> Exit
+                        </a>
                     </li>
                 </ul>
             </li>

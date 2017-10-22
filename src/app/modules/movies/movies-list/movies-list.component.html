@@ -4,12 +4,12 @@
             <span class="fa fa-plus"></span> NEW MOVIE
         </a>
     </div>
-    <div class="col-xs-4">
+    <div class="col-xs-4 col-xs-push-4">
         <div class="form-group form-group-sm">
             <input type="text" class="form-control" placeholder="Filter..." (keyup)="filterMovies(filter.value)" #filter>
         </div>
     </div>
-    <div class="col-xs-4 col-xs-push-2">
+    <div class="col-xs-2 col-xs-push-4">
         <div class="form-group form-group-sm">
             <select class="form-control">
                 <option value="">By date (desc)</option>
@@ -21,8 +21,18 @@
     </div>
 </div>
 <div class="movies-list">
-    <a [routerLink]="['/movies', 'edit', movie._id]" class="movie-box" *ngFor="let movie of filtered_movies" >
-        <div class="movie-poster" [style.background-image]="'url(' + movie.poster + ')'"></div>
-        <h6>{{ movie.title }}</h6>
-    </a>
+    <div class="movie-box" *ngFor="let movie of filtered_movies" >
+        <button type="button" class="btn btn-default remove_movie" (click)="removeMovie($event)">
+            <span class="fa fa-times"></span>
+        </button>
+        <a [routerLink]="['/movies', 'edit', movie._id]">
+            <div class="movie-poster" [style.background-image]="'url(' + movie.poster + ')'"></div>
+        </a>
+        <div class="pa-5">
+            <a [routerLink]="['/movies', 'edit', movie._id]">
+                <h5>{{ movie.title }}</h5>
+                <h6 *ngIf="movie.title !== movie.original_title"><i>({{ movie.original_title }})</i></h6>
+            </a>
+        </div>
+    </div>
 </div>

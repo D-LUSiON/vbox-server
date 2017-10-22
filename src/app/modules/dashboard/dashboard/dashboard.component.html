@@ -1,3 +1,42 @@
-<p>
-  dashboard works!
-</p>
+<div class="row">
+    <div class="col-xs-3">
+        <a [routerLink]="['/collections']" class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">Collections</div>
+            </div>
+            <div class="panel-body">
+                <span class="fa fa-database fa-4x"></span>
+            </div>
+        </a>
+    </div>
+    <div class="col-xs-3">
+        <a [routerLink]="['/movies']" class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">Movies</div>
+            </div>
+            <div class="panel-body">
+                <span class="fa fa-film fa-4x"></span>
+            </div>
+        </a>
+    </div>
+    <div class="col-xs-3">
+        <a [routerLink]="['/tv-shows']" class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">TV Shows</div>
+            </div>
+            <div class="panel-body">
+                <span class="fa fa-television fa-4x"></span>
+            </div>
+        </a>
+    </div>
+    <div class="col-xs-3">
+        <a [routerLink]="['/categories']" class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">Categories</div>
+            </div>
+            <div class="panel-body">
+                <span class="fa fa-list-alt fa-4x"></span>
+            </div>
+        </a>
+    </div>
+</div>
