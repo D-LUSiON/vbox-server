@@ -20,7 +20,9 @@ import {
     SettingsService,
     MoviesService,
     NotificationsService,
-    GenresService
+    GenresService,
+    TvShowsService,
+    CollectionsService
 } from '@app/services';
 
 import { AppComponent } from './app.component';
@@ -43,6 +45,8 @@ import { AppComponent } from './app.component';
     providers: [
         SettingsService,
         MoviesService,
+        TvShowsService,
+        CollectionsService,
         NotificationsService,
         GenresService
     ],

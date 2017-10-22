@@ -30,7 +30,8 @@
     </div>
 </div>
 <div class="movies-list animated fadeInUp">
-    <div class="movie-box" *ngFor="let movie of filtered_movies" >
+    <div class="no-movies-added pv-25" *ngIf="movies.length === 0">No TV Shows added!</div>
+    <div class="movie-box" *ngFor="let movie of filtered_movies">
         <button type="button" class="btn btn-default remove_movie" (click)="removeMovie(movie)">
             <span class="fa fa-times"></span>
         </button>
@@ -40,7 +41,9 @@
         <div class="pa-5">
             <a [routerLink]="['/movies', 'edit', movie._id]">
                 <h5>{{ movie.title }} ({{ movie.release_date.split('-')[0] }})</h5>
-                <h6 *ngIf="movie.title !== movie.original_title"><i>({{ movie.original_title }})</i></h6>
+                <h6 *ngIf="movie.title !== movie.original_title">
+                    <i>({{ movie.original_title }})</i>
+                </h6>
             </a>
         </div>
     </div>

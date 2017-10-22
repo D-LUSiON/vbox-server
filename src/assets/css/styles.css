@@ -266,6 +266,11 @@ body {
     display: block;
     clear: both;
 }
+.movies-list .no-movies-added {
+    font-size: 50px;
+    color: #888;
+    text-align: center;
+}
 .movie-box {
     position: relative;
     float: left;
@@ -330,9 +335,29 @@ body {
 }
 
 .movie-edit .movie-poster {
+    position: relative;
     height: 406px;
     background-color: #333;
     background-size: cover;
+}
+
+.movie-edit .movie-poster .movie-runtime {
+    position: absolute;
+    z-index: 1;
+    top: 5px;
+    left: 5px;
+}
+.movie-edit .movie-poster .movie-rating {
+    position: absolute;
+    z-index: 1;
+    top: 5px;
+    right: 5px;
+}
+.movie-edit .movie-poster .labels-container {
+    position: absolute;
+    z-index: 1;
+    bottom: 5px;
+    left: 5px;
 }
 
 .movie-edit textarea.form-control {

@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { TvShowsListComponent } from './tv-shows-list/tv-shows-list.component';
 import { TvShowEditComponent } from './tv-show-edit/tv-show-edit.component';
+import { TvShowsService } from '@app/services';
 
 const routes: Routes = [
     {
@@ -18,6 +19,25 @@ const routes: Routes = [
                 component: TvShowEditComponent
             },
         ]
+    },
+    {
+        path: '',
+        component: TvShowsListComponent,
+        pathMatch: 'full',
+        resolve: {
+            movies: TvShowsService
+        }
+    },
+    {
+        path: 'new',
+        component: TvShowEditComponent
+    },
+    {
+        path: 'edit/:id',
+        component: TvShowEditComponent,
+        resolve: {
+            movies: TvShowsService
+        }
     },
 ];
 

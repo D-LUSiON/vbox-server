@@ -1,3 +1,50 @@
-<p>
-  tv-shows-list works!
-</p>
+<div class="filters-container row">
+    <div class="col-xs-2">
+        <a [routerLink]="['/tv-shows', 'new']" class="btn btn-default btn-sm">
+            <span class="fa fa-plus"></span> NEW TV SHOW
+        </a>
+    </div>
+    <div class="col-xs-4 col-xs-push-4">
+        <div class="form-group form-group-sm">
+            <input type="text" class="form-control" placeholder="Filter..." (keyup)="filterMovies(filter.value)" #filter>
+        </div>
+    </div>
+    <div class="col-xs-2 col-xs-push-4">
+        <div class="form-group form-group-sm">
+            <select class="form-control" (change)="sortMovies(sort_list.value)" #sort_list>
+                <option value="" disabled selected>Sorting...</option>
+                <option value="title,asc">By title (asc)</option>
+                <option value="title,desc">By title (desc)</option>
+                <option value="original_title,asc">By original title (asc)</option>
+                <option value="original_title,desc">By original title (desc)</option>
+                <option value="release_date,asc">By release date (asc)</option>
+                <option value="release_date,desc">By release date (desc)</option>
+                <option value="vote_average,asc">By average votes (asc)</option>
+                <option value="vote_average,desc">By average votes (desc)</option>
+                <option value="vote_count,asc">By number of votes (asc)</option>
+                <option value="vote_count,desc">By number of votes (desc)</option>
+                <option value="popularity,asc">By popularity (asc)</option>
+                <option value="popularity,desc">By popularity (desc)</option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="movies-list animated fadeInUp">
+    <div class="no-movies-added pv-25" *ngIf="tv_shows.length === 0">No TV Shows added!</div>
+    <div class="movie-box" *ngFor="let tv_show of filtered_tv_shows">
+        <button type="button" class="btn btn-default remove_movie" (click)="removeTvShow(movie)">
+            <span class="fa fa-times"></span>
+        </button>
+        <a [routerLink]="['/tv-shows', 'edit', tv_show._id]">
+            <div class="movie-poster" [style.background-image]="'url(' + tv_show.poster + ')'"></div>
+        </a>
+        <div class="pa-5">
+            <a [routerLink]="['/tv-shows', 'edit', tv_show._id]">
+                <h5>{{ tv_show.title }} ({{ tv_show.release_date.split('-')[0] }})</h5>
+                <h6 *ngIf="tv_show.title !== tv_show.original_title">
+                    <i>({{ tv_show.original_title }})</i>
+                </h6>
+            </a>
+        </div>
+    </div>
+</div>
