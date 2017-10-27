@@ -40,7 +40,7 @@ function createTrayIcon() {
     tray = new Tray(path.join(__dirname, '..', 'assets', 'app-icon-m.png'));
 
     // TODO: Get application title from configuration file
-    tray.setToolTip('Electron/Angular 4 quickstart project');
+    tray.setToolTip('PhotonBeam Server');
 
     const trayMenu = Menu.buildFromTemplate([
         {
@@ -177,3 +177,26 @@ ipcMain.on('Movie:remove', (event, movie) => {
 // Collections interface events
 
 // TV Shows interface events
+
+const TvShows = require('./controllers/tv-shows.class');
+
+ipcMain.on('TvShows:get', (event, arg) => {
+    const TvShow_DS = new TvShows(Datastore);
+    TvShow_DS.getAll((tv_shows) => {
+        event.sender.send('TvShows:get:response', tv_shows);
+    });
+});
+
+ipcMain.on('TvShow:save', (event, tv_show) => {
+    const TvShow_DS = new TvShows(Datastore);
+    TvShow_DS.save(tv_show, (tv_show_new) => {
+        event.sender.send('TvShow:save:response', tv_show_new);
+    });
+});
+
+ipcMain.on('TvShow:remove', (event, tv_show) => {
+    const TvShows_DS = new TvShows(Datastore);
+    TvShows_DS.remove(tv_show, (tv_show_new) => {
+        event.sender.send('TvShow:remove:response', tv_show_new);
+    });
+});

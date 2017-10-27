@@ -40,7 +40,7 @@ import { AppComponent } from './app.component';
         CollectionsModule,
         SettingsModule,
         ErrorModule,
-        NgxElectronModule
+        NgxElectronModule,
     ],
     providers: [
         SettingsService,

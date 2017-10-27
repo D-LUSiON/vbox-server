@@ -1,10 +1,10 @@
 export class LocalFile {
-    lastModified: number;
-    lastModifiedDate: Date;
-    name: string;
-    path: string;
-    size: number;
-    type: string;
+    lastModified: number = 0;
+    lastModifiedDate: Date = new Date();
+    name: string = '--- no file ---';
+    path: string = '';
+    size: number = 0;
+    type: string = '';
 
     constructor(data?) {
         if (data.lastModified) this.lastModified = data.lastModified;

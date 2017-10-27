@@ -36,8 +36,8 @@ export class Movie {
             if (data.id) this.id = data.id;
             if (data.title) this.title = data.title;
             if (data.poster_path) this.poster_path = data.poster_path;
-            if (data.poster) this.poster = data.poster;
-            if (data.backdrop_image) this.backdrop_image = data.backdrop_image;
+            if (data.poster) this.poster = data.poster; // check that if it's correct
+            if (data.backdrop_image) this.backdrop_image = data.backdrop_image; // check that if it's correct
             if (data.backdrop_path) this.backdrop_image = this.image_root + '1280' + data.backdrop_path;
             if (data.original_title) this.original_title = data.original_title;
             if (data.overview) this.overview = data.overview;

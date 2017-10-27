@@ -1,7 +1,7 @@
 <div class="movie-edit row">
     <form [formGroup]="tv_show_data" novalidate (ngSubmit)="onSubmit()">
         <div class="col-xs-3">
-            <div class="movie-poster mb-15" [style.background-image]="'url(' + tv_show_data.value['poster'] + ')'">
+            <div class="movie-poster mb-15" [style.background-image]="'url(' + current_poster + ')'">
                 <input type="hidden" formControlName="poster">
             </div>
             <div class="labels-container">
@@ -25,35 +25,90 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-6">
-                    <div class="form-group form-group-sm">
-                        <label>Title</label>
-                        <div class="input-group input-group-sm">
-                            <input type="text" class="form-control" formControlName="name" (keyup.enter)="getTvShowInfo()">
-                            <div class="input-group-btn">
-                                <button class="btn btn-default" (click)="getTvShowInfo()" [disabled]="tv_show_data.value['name'] === ''" title="Get info from themoviedb.org">
-                                    <span class="fa fa-info-circle"></span>
-                                </button>
+                <div class="col-xs-12">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" [class.active]="selected_tab === 'info'">
+                            <a href="#info" aria-controls="info" role="tab" data-toggle="tab" (click)="changeTab($event, 'info')">Info</a>
+                        </li>
+                        <li role="presentation" [class.active]="selected_tab === 'seasons'" *ngIf="tv_show.number_of_seasons">
+                            <a href="#seasons" aria-controls="seasons" role="tab" data-toggle="tab" (click)="changeTab($event, 'seasons')">Seasons</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" *ngIf="selected_tab === 'info'">
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="form-group form-group-sm">
+                                        <label>Title</label>
+                                        <div class="input-group input-group-sm">
+                                            <input type="text" class="form-control" formControlName="name" (keyup.enter)="getTvShowInfo()">
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-default" (click)="getTvShowInfo()" [disabled]="tv_show_data.value['name'] === ''" title="Get info from themoviedb.org">
+                                                    <span class="fa fa-info-circle"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        <label>Original Title</label>
+                                        <div class="input-group input-group-sm">
+                                            <input type="text" class="form-control" formControlName="original_name" (keyup.enter)="getTvShowInfo($event)">
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-default" (click)="getMovieInfo()" [disabled]="tv_show_data.value['name'] === ''" title="Get info from themoviedb.org">
+                                                    <span class="fa fa-info-circle"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        <label>Overview</label>
+                                        <textarea class="form-control" formControlName="overview"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane pt-15 active" *ngIf="selected_tab === 'seasons'">
+                            <div class="tabs-left">
+                                <ul class="nav nav-tabs">
+                                    <li [class.active]="selected_season.season_number === season.season_number" *ngFor="let season of tv_show.seasons; let i = index">
+                                        <a href="#a" (click)="onChangeSeason($event, season.season_number)">Season {{ season.season_number < 10? '0' + season.season_number : season.season_number }}</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane active">
+                                        <div class="pa-15 bg-gray-light" style="margin-left: 98px;">
+                                            <h3>Season {{ selected_season.season_number}}</h3>
+                                            <h4>{{ selected_season.episode_count }} episodes{{ (selected_season.files.length > 0)? ', ' + selected_season.files.length + ' added' : '' }}, air date: {{ selected_season.air_date? selected_season.air_date : 'not aired yet!'}}</h4>
+                                            <section>
+                                                <div class="mb-15">
+                                                    <button type="button" class="btn btn-default file-container">
+                                                        <span class="fa fa-folder-o"></span> Choose...
+                                                        <input type="file" (change)="onFilesSelected($event)" multiple/>
+                                                    </button>
+                                                </div>
+                                                <div class="list-group" [sortablejs]="selected_season.files">
+                                                    <div class="list-group-item" *ngFor="let file of selected_season.files; let idx = index">
+                                                        <div class="pull-left pt-5 mr-10">
+                                                            <span class="label label-{{ (idx + 1) <= selected_season.episode_count? 'success' : 'danger' }}">File for Ep. {{ (idx < 9? '0' : '') + (idx + 1) }}</span>
+                                                        </div>
+                                                        <button type="button" class="btn btn-link pull-right" (click)="removeFile(file)">
+                                                            <span class="fa fa-times"></span>
+                                                        </button>
+                                                        <h5>
+                                                            <strong>{{ file.name }} <small>({{ (file.size_gb > 1)? file.size_gb + 'Gb' : file.size_mb + 'Mb' }})</small></strong>
+                                                        </h5>
+                                                        <h6 *ngIf="(idx + 1) > selected_season.episode_count"><i class="text-danger">* Season doesn't have {{ idx + 1}}-th episode so check for duplicate files or files that are not for this season!</i></h6>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group form-group-sm">
-                        <label>Original Title</label>
-                        <div class="input-group input-group-sm">
-                            <input type="text" class="form-control" formControlName="original_name" (keyup.enter)="getTvShowInfo($event)">
-                            <div class="input-group-btn">
-                                <button class="btn btn-default" (click)="getMovieInfo()" [disabled]="tv_show_data.value['name'] === ''" title="Get info from themoviedb.org">
-                                    <span class="fa fa-info-circle"></span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group form-group-sm">
-                        <label>Overview</label>
-                        <textarea class="form-control" formControlName="overview"></textarea>
-                    </div>
-                </div>
-                <div class="col-xs-6">
                 </div>
             </div>
         </div>
@@ -72,13 +127,15 @@
             <div class="modal-body">
                 <div class="list-group movie-select">
                     <div class="list-group-item" [class.selected]="selected_tv_show? found_tv_show.id === selected_tv_show.id : false" *ngFor="let found_tv_show of found_tv_show_results"
-                        (click)="onSelectMovie(found_tv_show)" (dblclick)="onSaveCloseModal()">
+                        (click)="onSelectTVShow(found_tv_show)" (dblclick)="onSaveCloseModal()">
                         <div class="row">
                             <div class="col-xs-3">
                                 <img [src]="found_tv_show.poster" [alt]="found_tv_show.original_name" class="img-responsive" />
                             </div>
                             <div class="col-xs-9">
-                                <h4>{{ found_tv_show.name }} <small *ngIf="found_tv_show.name !== found_tv_show.original_name">({{ found_tv_show.original_name }})</small></h4>
+                                <h4>{{ found_tv_show.name }}
+                                    <small *ngIf="found_tv_show.name !== found_tv_show.original_name">({{ found_tv_show.original_name }})</small>
+                                </h4>
                                 <h5>
                                     <small>
                                         <i>(Release date: {{ found_tv_show.first_air_date }})</i>

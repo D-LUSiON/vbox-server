@@ -13,6 +13,7 @@ export class GenresService {
     private tmtb_api_key: string = '';
 
     private all_genres: Array<{ [key: string]: any }> = [];
+    private all_genres_tv: Array<{ [key: string]: any }> = [];
 
     genres_loaded: boolean = false;
 
@@ -25,13 +26,19 @@ export class GenresService {
             this.subscription = this.settingsService.emmiter.asObservable().subscribe(() => {
                 this.tmtb_api_key = this.settingsService.settings.api_key;
                 this.subscription.unsubscribe();
-                this.subscription = this.getGenres().subscribe((res) => {
+                this.getGenres().subscribe((res) => {
                     this.all_genres = res.slice();
+                });
+                this.getGenresTV().subscribe((res) => {
+                    this.all_genres_tv = res.slice();
                 });
             });
         } else {
-            let subscription = this.getGenres().subscribe((res) => {
-                this.all_genres = res.json();
+            this.getGenres().subscribe((res) => {
+                this.all_genres = res.slice();
+            });
+            this.getGenresTV().subscribe((res) => {
+                this.all_genres_tv = res.slice();
             });
         }
     }
@@ -53,8 +60,29 @@ export class GenresService {
             });
     }
 
+    getGenresTV() {
+        return this.http.get(`https://api.themoviedb.org/3/genre/tv/list?api_key=${this.tmtb_api_key}&language=en-US`)
+            .map((res) => {
+                return res.json().genres;
+            })
+            .catch((err) => {
+                console.error(err);
+                this.notificationsService.emit({
+                    title: err.statusText,
+                    message: JSON.parse(err._body).status_message,
+                    severity: 'error',
+                    data: JSON.parse(err._body)
+                });
+                return Observable.throw('Something went wrong');
+            });
+    }
+
     get genres() {
         return this.all_genres.slice();
+    }
+
+    get genres_tv() {
+        return this.all_genres_tv.slice();
     }
 
 }
