@@ -4,25 +4,47 @@
             <span class="fa fa-plus"></span> NEW MOVIE
         </a>
     </div>
-    <div class="col-xs-4">
+    <div class="col-xs-4 col-xs-push-4">
         <div class="form-group form-group-sm">
             <input type="text" class="form-control" placeholder="Filter..." (keyup)="filterMovies(filter.value)" #filter>
         </div>
     </div>
-    <div class="col-xs-4 col-xs-push-2">
+    <div class="col-xs-2 col-xs-push-4">
         <div class="form-group form-group-sm">
-            <select class="form-control">
-                <option value="">By date (desc)</option>
-                <option value="">By date (asc)</option>
-                <option value="">By title (desc)</option>
-                <option value="">By title (asc)</option>
+            <select class="form-control" (change)="sortMovies(sort_list.value)" #sort_list>
+                <option value="" disabled selected>Sorting...</option>
+                <option value="title,asc">By title (asc)</option>
+                <option value="title,desc">By title (desc)</option>
+                <option value="original_title,asc">By original title (asc)</option>
+                <option value="original_title,desc">By original title (desc)</option>
+                <option value="release_date,asc">By release date (asc)</option>
+                <option value="release_date,desc">By release date (desc)</option>
+                <option value="vote_average,asc">By average votes (asc)</option>
+                <option value="vote_average,desc">By average votes (desc)</option>
+                <option value="vote_count,asc">By number of votes (asc)</option>
+                <option value="vote_count,desc">By number of votes (desc)</option>
+                <option value="popularity,asc">By popularity (asc)</option>
+                <option value="popularity,desc">By popularity (desc)</option>
             </select>
         </div>
     </div>
 </div>
-<div class="movies-list">
-    <a [routerLink]="['/movies', 'edit', movie._id]" class="movie-box" *ngFor="let movie of filtered_movies" >
-        <div class="movie-poster" [style.background-image]="'url(' + movie.poster + ')'"></div>
-        <h6>{{ movie.title }}</h6>
-    </a>
+<div class="movies-list animated fadeInUp">
+    <div class="no-movies-added pv-25" *ngIf="movies.length === 0">No Movies added!</div>
+    <div class="movie-box" *ngFor="let movie of filtered_movies">
+        <button type="button" class="btn btn-default remove_movie" (click)="removeMovie(movie)">
+            <span class="fa fa-times"></span>
+        </button>
+        <a [routerLink]="['/movies', 'edit', movie._id]">
+            <div class="movie-poster" [style.background-image]="'url(' + movie.poster + ')'"></div>
+        </a>
+        <div class="pa-5">
+            <a [routerLink]="['/movies', 'edit', movie._id]">
+                <h5>{{ movie.title }} ({{ movie.release_date.split('-')[0] }})</h5>
+                <h6 *ngIf="movie.title !== movie.original_title">
+                    <i>({{ movie.original_title }})</i>
+                </h6>
+            </a>
+        </div>
+    </div>
 </div>

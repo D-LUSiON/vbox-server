@@ -1,5 +1,4 @@
-import { GenresService } from '../../../services/genres.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, NgZone } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import {
@@ -11,7 +10,8 @@ import {
 import {
     MoviesService,
     SettingsService,
-    NotificationsService
+    NotificationsService,
+    GenresService
 } from '@app/services';
 
 @Component({
@@ -34,14 +34,17 @@ export class MovieEditComponent implements OnInit {
     private _background_dom;
 
     constructor(
+        private router: Router,
         private route: ActivatedRoute,
-        private movieService: MoviesService,
+        private moviesService: MoviesService,
         private notificationsService: NotificationsService,
         private genresServices: GenresService,
         private ngZone: NgZone
     ) {
         if (this.route.snapshot.params['id'])
-            this.movie = this.movieService.getByID(this.route.snapshot.params['id']);
+            this.ngZone.run(() => {
+                this.movie = this.moviesService.getByID(this.route.snapshot.params['id']);
+            });
 
         this.movie_data = new FormGroup({
             '_id': new FormControl(this.movie._id),
@@ -68,15 +71,18 @@ export class MovieEditComponent implements OnInit {
 
     getMovieInfo(event?) {
         let title = event ? event.target.value : this.movie_data.value['title'];
-        this.movieService.getMovieInfo(title).subscribe((movie_data) => {
+        this.moviesService.getMovieInfo(title).subscribe((movie_data) => {
             if (movie_data.length > 1) {
                 this.found_movie_results = movie_data.slice();
                 this.modal_shown = true;
             } else {
-                this.movie = new Movie(movie_data[0]);
-                this.movie.movie_files = this.movie_data.value['movie_files'];
-                this.movie_data.patchValue(this.movie);
-                this._background_dom.style.backgroundImage = `url("${this.movie.backdrop_image}")`;
+                this.moviesService.getMovieDetails(movie_data[0].id).subscribe((res) => {
+                    console.log(res);
+                    this.movie = new Movie(movie_data[0]);
+                    this.movie.movie_files = this.movie_data.value['movie_files'];
+                    this.movie_data.patchValue(this.movie);
+                    this._background_dom.style.backgroundImage = `url("${this.movie.backdrop_image}")`;
+                });
             }
         });
     }
@@ -157,12 +163,15 @@ export class MovieEditComponent implements OnInit {
         this.modal_shown = false;
     }
     onSaveCloseModal() {
-        this.modal_shown = false;
         this.movie = new Movie(this.selected_movie);
-        this.movie.movie_files = this.movie_data.value['movie_files'];
-        this.movie_data.patchValue(this.movie);
-        this._background_dom.style.backgroundImage = `url("${this.movie.backdrop_image}")`;
-        this.selected_movie = undefined;
+        this.moviesService.getMovieDetails(this.movie.id).subscribe((res) => {
+            this.movie = new Movie(res);
+            this.modal_shown = false;
+            this.movie.movie_files = this.movie_data.value['movie_files'];
+            this.movie_data.patchValue(this.movie);
+            this._background_dom.style.backgroundImage = `url("${this.movie.backdrop_image}")`;
+            this.selected_movie = undefined;
+        });
     }
 
     removeFile(file: LocalFile) {
@@ -179,7 +188,19 @@ export class MovieEditComponent implements OnInit {
     }
 
     onSubmit() {
-        this.movieService.saveMovie(this.movie);
+        if (this.movie.title && this.movie.movie_files.length > 0)
+            this.moviesService.saveMovie(this.movie).subscribe((movie_data: Movie) => {
+                console.log('Movie saved!', movie_data);
+                if (!this.movie._id && movie_data._id)
+                    setTimeout(() => {
+                        this.router.navigate(['/movies', 'edit', movie_data._id]);
+                    }, 100);
+            });
+    }
+
+    onRemove(){
+        if (confirm(`Are you sure you want to remove "${this.movie.title}"?`))
+        this.moviesService.removeMovie(this.movie);
     }
 
 }

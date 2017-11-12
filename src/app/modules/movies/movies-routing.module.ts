@@ -20,7 +20,10 @@ const routes: Routes = [
     },
     {
         path: 'edit/:id',
-        component: MovieEditComponent
+        component: MovieEditComponent,
+        resolve: {
+            movies: MoviesService
+        }
     },
 ];
 

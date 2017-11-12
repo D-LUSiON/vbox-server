@@ -29,6 +29,7 @@ import { ToastyModule } from 'ng2-toasty';
         FormsModule,
         ReactiveFormsModule,
         ToastyModule,
+        DropdownModule,
         MainMenuComponent,
         // Directives and Pipes
     ],

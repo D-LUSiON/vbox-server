@@ -36,14 +36,14 @@ let mainMenu = Menu.buildFromTemplate(appMenu);
 
 // Create tray icon with functionality
 let tray = null
+
 function createTrayIcon() {
     tray = new Tray(path.join(__dirname, '..', 'assets', 'app-icon-m.png'));
 
     // TODO: Get application title from configuration file
-    tray.setToolTip('Electron/Angular 4 quickstart project');
+    tray.setToolTip('PhotonBeam Server');
 
-    const trayMenu = Menu.buildFromTemplate([
-        {
+    const trayMenu = Menu.buildFromTemplate([{
             label: 'About'
         },
         { role: 'quit' }
@@ -52,7 +52,7 @@ function createTrayIcon() {
     tray.setContextMenu(trayMenu);
 }
 
-function createWindow() {
+function createWindow(callback) {
     let winState = windowStateKeeper({
         defaultWidth: 1200,
         defaultHeight: 700
@@ -63,6 +63,7 @@ function createWindow() {
         height: 700,
         x: winState.x,
         y: winState.y,
+        backgroundColor: '#333333',
         resizable: false,
         show: false,
         frame: false,
@@ -72,6 +73,8 @@ function createWindow() {
 
     mainWindow.once('ready-to-show', () => {
         mainWindow.show();
+        if (callback)
+            callback.apply(this, []);
     });
 
     mainWindow.loadURL(url.format({
@@ -87,24 +90,32 @@ function createWindow() {
     mainWindow.webContents.openDevTools();
     // }
 
-    mainWindow.on('closed', function () {
+    mainWindow.on('closed', function() {
         mainWindow = null
     });
 }
 
 app.on('ready', () => {
-    createWindow();
+    createWindow(() => {
+        /**
+         * Start Express server for watching movies
+         */
+        const VideoController = require('./controllers/video-controller.class');
+        const videoController = new VideoController(Datastore);
+
+    });
     Menu.setApplicationMenu(mainMenu);
     createTrayIcon();
+
 });
 
-app.on('window-all-closed', function () {
+app.on('window-all-closed', function() {
     if (process.platform !== 'darwin') {
         app.quit()
     }
 });
 
-app.on('activate', function () {
+app.on('activate', function() {
     if (mainWindow === null) {
         createWindow();
     }
@@ -166,6 +177,36 @@ ipcMain.on('Movie:save', (event, movie) => {
     });
 });
 
+ipcMain.on('Movie:remove', (event, movie) => {
+    const Movies_DS = new Movies(Datastore);
+    Movies_DS.remove(movie, (new_movie) => {
+        event.sender.send('Movie:remove:response', new_movie);
+    });
+});
+
 // Collections interface events
 
 // TV Shows interface events
+
+const TvShows = require('./controllers/tv-shows.class');
+
+ipcMain.on('TvShows:get', (event, arg) => {
+    const TvShow_DS = new TvShows(Datastore);
+    TvShow_DS.getAll((tv_shows) => {
+        event.sender.send('TvShows:get:response', tv_shows);
+    });
+});
+
+ipcMain.on('TvShow:save', (event, tv_show) => {
+    const TvShow_DS = new TvShows(Datastore);
+    TvShow_DS.save(tv_show, (tv_show_new) => {
+        event.sender.send('TvShow:save:response', tv_show_new);
+    });
+});
+
+ipcMain.on('TvShow:remove', (event, tv_show) => {
+    const TvShows_DS = new TvShows(Datastore);
+    TvShows_DS.remove(tv_show, (tv_show_new) => {
+        event.sender.send('TvShow:remove:response', tv_show_new);
+    });
+});

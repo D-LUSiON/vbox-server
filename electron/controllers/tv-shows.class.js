@@ -2,33 +2,33 @@ const path = require('path');
 
 const env = require('../environment.js');
 
-const Movies = function (Datastore) {
+const TvShows = function(Datastore) {
     const _self = this;
 
     this.db = null;
 
     function __construct() {
-        _self.db = new Datastore({ filename: path.join(env.user_data, 'movies.db'), autoload: true })
+        _self.db = new Datastore({ filename: path.join(env.user_data, 'tv-shows.db'), autoload: true });
     }
 
-    this.getAll = function (callback) {
-        this.db.find({}, (err, movies) => {
+    this.getAll = function(callback) {
+        this.db.find({}, (err, tv_shows) => {
             if (err)
                 console.log(err);
 
-            callback.apply(this, [movies]);
+            callback.apply(this, [tv_shows]);
         });
         return this;
     }
 
-    this.getByID = function (id, callback) {
+    this.getByID = function(id, callback) {
         this.db.find({ _id: id }, (err, movie) => {
             callback.apply(this, [movie]);
         });
         return this;
     }
 
-    this.save = function (data, callback) {
+    this.save = function(data, callback) {
         let new_data = JSON.parse(JSON.stringify(data));
         delete new_data._id;
 
@@ -37,8 +37,8 @@ const Movies = function (Datastore) {
                 callback.apply(this, [data]);
             });
         } else {
-            this.db.insert(new_data, (err, new_movie) => {
-                callback.apply(this, [new_movie]);
+            this.db.insert(new_data, (err, new_tv_show) => {
+                callback.apply(this, [new_tv_show]);
             });
         }
         return this;
@@ -61,4 +61,4 @@ const Movies = function (Datastore) {
     __construct();
 };
 
-module.exports = Movies;
+module.exports = TvShows;
